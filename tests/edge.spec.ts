@@ -1,0 +1,1 @@
+import { test, expect } from '@playwright/test';\n\ntest('TC-09 Edge Case – Empty Login Fields', async ({ page }) => {\n  await page.goto('/login');\n  await page.click('button[type="submit"]');\n  await expect(page.locator('.error')).toContainText('Username is required');\n  await expect(page.locator('.error')).toContainText('Password is required');\n});\n

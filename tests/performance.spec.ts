@@ -1,0 +1,1 @@
+import { test, expect } from '@playwright/test';\n\ntest('TC-08 Performance – Home Page Load Time', async ({ page }) => {\n  const start = Date.now();\n  await page.goto('/');\n  await page.waitForLoadState('load');\n  const duration = Date.now() - start;\n  console.log(`Home page load time: ${duration} ms`);\n  expect(duration).toBeLessThan(1500); // 1.5 seconds threshold\n});\n
