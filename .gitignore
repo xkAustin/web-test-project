@@ -56,10 +56,10 @@ build/
 .nyc_output/
 coverage/
 
-# Docker
+# Docker (only exclude temporary docker build directory, keep config files)
 .docker/
-Dockerfile
-.dockerignore
+# Dockerfile and .dockerignore are included in version control
+# docker-compose.yml is included in version control
 
 # Claude
 .claude/

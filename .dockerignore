@@ -1,0 +1,54 @@
+# Git and version control
+.git
+.gitignore
+.github
+
+# Node.js
+node_modules
+npm-debug.log
+npm-error.log
+yarn-error.log
+package-lock.json
+
+# IDE and editor files
+.vscode
+.idea
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+# Test artifacts
+reports
+coverage
+screenshots
+test-results
+.test-cache
+.nyc_output
+
+# Build artifacts
+dist
+build
+*.tgz
+*.zip
+*.tar.gz
+*.bak
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS files
+.AppleDouble
+.LSOverride
+ehthumbs.db
+
+# Documentation (optional - keep for reference)
+# docs
+
+# Playwright cache
+.playwright

@@ -1,0 +1,159 @@
+version: '3.8'
+
+services:
+  # ============================================================================
+  # Main Playwright Testing Service
+  # ============================================================================
+  playwright-tests:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: wangdanatest-automation:latest
+    container_name: playwright-tests
+
+    # Volume mounts for test files and output
+    volumes:
+      # Test files (read-only for consistency)
+      - ./tests:/app/tests:ro
+      - ./config:/app/config:ro
+
+      # Output directories (read-write for results)
+      - ./reports:/app/reports
+      - ./coverage:/app/coverage
+      - ./screenshots:/app/screenshots
+      - ./test-results:/app/test-results
+
+    # Environment configuration
+    environment:
+      CI: 'true'
+      HEADLESS: 'true'
+      LOG_LEVEL: 'info'
+      NODE_ENV: 'test'
+      PLAYWRIGHT_JUNIT_OUTPUT_NAME: 'junit-results.xml'
+
+    # Resource allocation
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
+
+    # Command to execute (can be overridden)
+    command: npm test
+
+    # Restart policy
+    restart: 'no'
+
+    # Interactive and TTY for debugging
+    stdin_open: true
+    tty: true
+
+  # ============================================================================
+  # Optional: Test Report Web Server
+  # ============================================================================
+  test-reporter:
+    image: nginx:alpine
+    container_name: playwright-reporter
+
+    # Port mapping for accessing reports
+    ports:
+      - "8080:80"
+
+    # Serve HTML reports
+    volumes:
+      - ./reports/html:/usr/share/nginx/html:ro
+
+    # Only start if reports are needed
+    profiles:
+      - reporter
+
+    # Depends on test completion
+    depends_on:
+      - playwright-tests
+
+  # ============================================================================
+  # Optional: Debug Service with Interactive Shell
+  # ============================================================================
+  playwright-debug:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: wangdanatest-automation:latest
+    container_name: playwright-debug
+
+    # Full access to project
+    volumes:
+      - ./:/app
+
+    # Interactive debugging environment
+    environment:
+      CI: 'false'
+      HEADLESS: 'false'
+      LOG_LEVEL: 'debug'
+      PWDEBUG: '1'
+
+    # Override default command for interactive shell
+    command: /bin/bash
+
+    # Enable interactive mode
+    stdin_open: true
+    tty: true
+
+    # Deploy settings for debugging
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 4G
+
+    # Only start when explicitly selected
+    profiles:
+      - debug
+
+# ============================================================================
+# Named Volumes for Persistence (Optional)
+# ============================================================================
+volumes:
+  reports:
+    driver: local
+  coverage:
+    driver: local
+  screenshots:
+    driver: local
+  test-results:
+    driver: local
+
+# ============================================================================
+# Usage Instructions:
+#
+# Run all tests (default):
+#   docker-compose up
+#
+# Run specific test suite:
+#   docker-compose run playwright-tests npm run test:e2e
+#   docker-compose run playwright-tests npm run test:api
+#   docker-compose run playwright-tests npm run test:security
+#
+# Run with test reporter:
+#   docker-compose --profile reporter up
+#   Open http://localhost:8080
+#
+# Run debug session:
+#   docker-compose --profile debug run playwright-debug
+#
+# Run and remove after completion:
+#   docker-compose up --abort-on-container-exit
+#
+# Build image without running:
+#   docker-compose build
+#
+# Stream logs:
+#   docker-compose logs -f playwright-tests
+#
+# Clean up (remove containers and volumes):
+#   docker-compose down -v
+#
+# ============================================================================
