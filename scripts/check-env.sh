@@ -47,7 +47,7 @@ get_version() {
 }
 
 echo -e "${BLUE}检查系统环境${NC}"
-echo "━".repeat(40)
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # 检查 Node.js
 if check_command node; then
@@ -67,7 +67,7 @@ fi
 
 echo ""
 echo -e "${BLUE}检查项目依赖${NC}"
-echo "━".repeat(40)
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # 检查 node_modules
 if [ -d "node_modules" ]; then
@@ -95,7 +95,7 @@ check_package "axe-playwright"
 
 echo ""
 echo -e "${BLUE}检查项目文件${NC}"
-echo "━".repeat(40)
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 check_file "playwright.config.ts"
 check_file ".env.example"
@@ -104,7 +104,7 @@ check_file "package-lock.json"
 
 echo ""
 echo -e "${BLUE}检查配置文件${NC}"
-echo "━".repeat(40)
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 if [ -f ".env" ]; then
   echo -e "${GREEN}✓${NC} .env 存在"
@@ -132,7 +132,7 @@ fi
 
 echo ""
 echo -e "${BLUE}检查 Playwright 浏览器${NC}"
-echo "━".repeat(40)
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 # 检查 Playwright 缓存目录
 if [ -d "$HOME/.cache/ms-playwright" ] || [ -d "$HOME/Library/Caches/ms-playwright" ]; then
@@ -145,7 +145,7 @@ fi
 
 echo ""
 echo -e "${BLUE}检查目录结构${NC}"
-echo "━".repeat(40)
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 REQUIRED_DIRS=(
   "tests"
@@ -169,9 +169,9 @@ for dir in "${REQUIRED_DIRS[@]}"; do
 done
 
 echo ""
-echo "━".repeat(40)
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo -e "${BLUE}检查摘要${NC}"
-echo "━".repeat(40)
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 
 if [ $ERRORS -eq 0 ] && [ $WARNINGS -eq 0 ]; then
   echo -e "${GREEN}✓ 所有检查通过！可以开始运行测试。${NC}"

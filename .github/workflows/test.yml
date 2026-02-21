@@ -6,12 +6,16 @@ on:
   pull_request:
     branches: [ main, develop ]
   schedule:
-    # 每天北京时间 9 点运行一次
     - cron: '0 1 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   test:
-    name: Playwright Tests
+    name: Playwright Tests - Node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -33,6 +37,29 @@ jobs:
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        continue-on-error: true
+
+      - name: Run API tests
+        run: npm run test:api
+        continue-on-error: true
+
+      - name: Run Security tests
+        run: npm run test:security
+        continue-on-error: true
+
+      - name: Run Performance tests
+        run: npm run test:performance
+        continue-on-error: true
+
+      - name: Run Accessibility tests
+        run: npm run test:accessibility
+        continue-on-error: true
 
       - name: Run all tests
         run: npm test
@@ -61,6 +88,14 @@ jobs:
           path: reports/html/
           retention-days: 30
 
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots-node-${{ matrix.node-version }}
+          path: screenshots/
+          retention-days: 7
+
   security-audit:
     name: Security Audit
     runs-on: ubuntu-latest
@@ -73,6 +108,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20.x
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -80,3 +116,63 @@ jobs:
       - name: Run npm audit
         run: npm audit --audit-level=moderate
         continue-on-error: true
+
+      - name: Run npm outdated
+        run: npm outdated
+        continue-on-error: true
+
+  docker:
+    name: Build and Test Docker Image
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: false
+          tags: test-project:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run linter
+        run: npm run lint
+        continue-on-error: true
+
+      - name: Run formatter check
+        run: npm run format -- --check || true
+        continue-on-error: true
+
+  notify:
+    name: Notify Results
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [test]
+
+    steps:
+      - name: Check test results
+        run: echo "Tests completed with status - Success or Failure"

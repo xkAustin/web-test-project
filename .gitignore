@@ -1,15 +1,72 @@
+# Dependencies
 node_modules/
-.env
+package-lock.json
 npm-debug.log
+yarn-error.log
+
+# Logs
 *.log
-tests/report/
-Dockerfile
-.dockerignore
+logs/
+
+# Reports and coverage
+reports/
+coverage/
+.nyc_output/
+*.html
+
+# Playwright
+test-results/
+.test-cache/
+.playwright/
+screenshots/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 .DS_Store
-.idea
-.vscode
+Thumbs.db
+
+# Build and distribution
+dist/
+build/
 *.tgz
 *.zip
 *.tar.gz
 *.bak
-.claude
+
+# IDE
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+*.c9/
+*.iml
+.idea
+.vscode
+
+# Testing
+.nyc_output/
+coverage/
+
+# Docker
+.docker/
+Dockerfile
+.dockerignore
+
+# Claude
+.claude/
+
+# OS files
+.DS_Store
+.AppleDouble
+.LSOverride
+Thumbs.db
+ehthumbs.db

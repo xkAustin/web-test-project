@@ -1,7 +1,17 @@
 {
   "name": "wangdanatest-automation",
   "version": "1.0.0",
+  "description": "Playwright-based automated testing for wangdanatest.top",
   "private": true,
+  "keywords": [
+    "playwright",
+    "automation",
+    "e2e",
+    "testing",
+    "qa"
+  ],
+  "author": "QA Team",
+  "license": "MIT",
   "scripts": {
     "test": "playwright test",
     "test:ui": "playwright test --ui",
@@ -20,14 +30,45 @@
     "test:headed": "playwright test --headed",
     "test:watch": "playwright test --watch",
     "coverage": "nyc playwright test",
-    "lint": "eslint . --ext .ts",
-    "format": "prettier --write tests/**/*.ts",
-    "install:browsers": "playwright install --with-deps"
+    "lint": "eslint . --ext .ts --max-warnings 10",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write 'tests/**/*.ts' 'scripts/**/*.sh'",
+    "format:check": "prettier --check 'tests/**/*.ts' 'scripts/**/*.sh'",
+    "install:browsers": "playwright install --with-deps",
+    "pretest": "npm run lint:fix",
+    "clean": "rm -rf reports coverage screenshots .test-cache",
+    "clean:browsers": "playwright install --with-deps"
   },
   "devDependencies": {
     "@playwright/test": "^1.43.0",
-    "nyc": "^15.1.0",
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
     "axe-playwright": "^2.0.0",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "eslint": "^8.56.0",
+    "eslint-plugin-playwright": "^0.20.0",
+    "nyc": "^15.1.0",
+    "prettier": "^3.1.1",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/wangdanatest-automation.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/wangdanatest-automation/issues"
+  },
+  "nyc": {
+    "all": true,
+    "include": [
+      "tests/**/*.ts"
+    ],
+    "exclude": [
+      "tests/**/*.spec.ts"
+    ]
   }
 }
