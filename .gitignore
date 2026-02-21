@@ -1,0 +1,15 @@
+node_modules/
+.env
+npm-debug.log
+*.log
+tests/report/
+Dockerfile
+.dockerignore
+.DS_Store
+.idea
+.vscode
+*.tgz
+*.zip
+*.tar.gz
+*.bak
+.claude

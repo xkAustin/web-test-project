@@ -4,10 +4,30 @@
   "private": true,
   "scripts": {
     "test": "playwright test",
-    "test:report": "playwright test --reporter html"
+    "test:ui": "playwright test --ui",
+    "test:debug": "playwright test --debug",
+    "test:chromium": "playwright test --project=chromium",
+    "test:firefox": "playwright test --project=firefox",
+    "test:webkit": "playwright test --project=webkit",
+    "test:e2e": "playwright test tests/e2e",
+    "test:api": "playwright test tests/api",
+    "test:security": "playwright test tests/security",
+    "test:performance": "playwright test tests/performance",
+    "test:accessibility": "playwright test tests/security/accessibility.spec.ts",
+    "test:mobile": "playwright test --project='Mobile Chrome' --project='Mobile Safari'",
+    "test:failed": "playwright test --last-failed",
+    "test:report": "playwright show-report reports/html",
+    "test:headed": "playwright test --headed",
+    "test:watch": "playwright test --watch",
+    "coverage": "nyc playwright test",
+    "lint": "eslint . --ext .ts",
+    "format": "prettier --write tests/**/*.ts",
+    "install:browsers": "playwright install --with-deps"
   },
   "devDependencies": {
     "@playwright/test": "^1.43.0",
+    "nyc": "^15.1.0",
+    "axe-playwright": "^2.0.0",
     "dotenv": "^16.4.5"
   }
 }
