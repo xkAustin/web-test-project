@@ -121,11 +121,15 @@ test.describe('Accessibility - WCAG 2.0 AA Compliance Tests', () => {
       const submitButton = page.locator('button[type="submit"]').first();
       await submitButton.click({ force: true });
 
-      await page.waitForTimeout(500);
-
       const errorMessages = page.locator('[role="alert"], .error, .alert');
+      // Wait for at least one error message to become visible, but don't fail if none appear (site dependent)
+      try {
+        await expect(errorMessages.first()).toBeVisible({ timeout: 2000 });
+      } catch {
+        console.log('No error messages appeared within timeout');
+      }
+      
       const errorCount = await errorMessages.count();
-
       if (errorCount > 0) {
         for (let i = 0; i < Math.min(errorCount, 3); i++) {
           const errorText = await errorMessages.nth(i).textContent();
@@ -160,7 +164,8 @@ test.describe('Accessibility - WCAG 2.0 AA Compliance Tests', () => {
     if (skipLinkExists) {
       expect(skipLinkExists).toBeTruthy();
     } else {
-      expect(true).toBeTruthy();
+      console.log('Warning: Skip to main content link not found');
+      expect(skipLinkExists).toBe(false);
     }
   });
 

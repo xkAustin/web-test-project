@@ -5,7 +5,7 @@
 # ============================================================================
 # BUILDER STAGE: Install dependencies
 # ============================================================================
-FROM mcr.microsoft.com/playwright:v1.43.0-jammy as builder
+FROM mcr.microsoft.com/playwright:v1.43.0-jammy AS builder
 
 WORKDIR /app
 

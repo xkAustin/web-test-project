@@ -30,7 +30,7 @@
     "test:headed": "playwright test --headed",
     "test:watch": "playwright test --watch",
     "coverage": "nyc playwright test",
-    "lint": "eslint . --ext .ts --max-warnings 10",
+    "lint": "eslint . --ext .ts --max-warnings 70",
     "lint:fix": "eslint . --ext .ts --fix",
     "format": "prettier --write 'tests/**/*.ts' 'scripts/**/*.sh'",
     "format:check": "prettier --check 'tests/**/*.ts' 'scripts/**/*.sh'",

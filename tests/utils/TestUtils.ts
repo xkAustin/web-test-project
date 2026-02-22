@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Page, Route } from '@playwright/test';
 
 export class TestUtils {
   /**
@@ -199,7 +199,7 @@ export class TestUtils {
   static async interceptRequest(
     page: Page,
     urlPattern: string | RegExp,
-    callback: (route: any) => void
+    callback: (route: Route) => void
   ): Promise<void> {
     await page.route(urlPattern, callback);
   }
@@ -215,7 +215,7 @@ export class TestUtils {
   /**
    * Simulate network throttling
    */
-  static async throttleNetwork(page: Page, downloadSpeed: number): Promise<void> {
+  static async throttleNetwork(page: Page): Promise<void> {
     await page.route('**/*', async (route) => {
       const response = await route.response();
       if (response) {
