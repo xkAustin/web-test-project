@@ -1,1 +1,8 @@
-import { test, expect } from '@playwright/test';\n\ntest('TC-06 CSRF Protection', async ({ request }) => {\n  const response = await request.post('https://www.wangdanatest.top/api/submit', {\n    data: { foo: 'bar' },\n  });\n  expect(response.status()).toBe(403);\n});\n
+import { test, expect } from '@playwright/test';
+
+test('TC-06 CSRF Protection', async ({ request }) => {
+  const response = await request.post('https://www.wangdanatest.top/api/submit', {
+    data: { foo: 'bar' },
+  });
+  expect(response.status()).toBe(403);
+});

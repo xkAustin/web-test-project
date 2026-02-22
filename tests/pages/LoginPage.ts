@@ -27,7 +27,7 @@ export class LoginPage extends BasePage {
     await this.usernameInput.fill(username);
     await this.passwordInput.fill(password);
     await this.submitButton.click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('networkidle2');
   }
 
   async loginWithRememberMe(username: string, password: string) {
@@ -35,7 +35,7 @@ export class LoginPage extends BasePage {
     await this.passwordInput.fill(password);
     await this.rememberMeCheckbox.check();
     await this.submitButton.click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('networkidle2');
   }
 
   async getErrorMessage(): Promise<string> {

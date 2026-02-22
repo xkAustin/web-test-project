@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { TEST_USER } from './config';
+import { TEST_USER } from '../utils/config';
 
 // 1. Login missing username
 test('TC-Edge-01 Login without username', async ({ page }) => {

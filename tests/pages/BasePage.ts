@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page } from '@playwright/test';
 
 export class BasePage {
   readonly page: Page;
@@ -8,7 +8,7 @@ export class BasePage {
   }
 
   async navigateTo(path: string = '/') {
-    await this.page.goto(path, { waitUntil: 'networkidle' });
+    await this.page.goto(path, { waitUntil: 'networkidle2' });
   }
 
   async getTitle(): Promise<string> {
@@ -29,7 +29,7 @@ export class BasePage {
 
   async waitForNavigation(action: () => Promise<void>) {
     await Promise.all([
-      this.page.waitForNavigation({ waitUntil: 'networkidle' }),
+      this.page.waitForNavigation({ waitUntil: 'networkidle2' }),
       action()
     ]);
   }
@@ -58,7 +58,7 @@ export class BasePage {
   async dismissCookieBanner() {
     const bannerSelector = '[class*="cookie"]';
     try {
-      const banner = await this.page.locator(bannerSelector).first();
+      const banner = this.page.locator(bannerSelector).first();
       if (await banner.isVisible({ timeout: 5000 })) {
         const closeButton = banner.locator('button:has-text("Accept"), button:has-text("Close"), [aria-label*="close"]');
         await closeButton.click().catch(() => {});

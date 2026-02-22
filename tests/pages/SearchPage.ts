@@ -26,7 +26,7 @@ export class SearchPage extends BasePage {
   async search(query: string): Promise<void> {
     await this.searchInput.fill(query);
     await this.searchButton.click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('networkidle2');
   }
 
   async getResultsCount(): Promise<number> {
@@ -47,13 +47,13 @@ export class SearchPage extends BasePage {
 
   async applySorting(sortOption: string): Promise<void> {
     await this.sortDropdown.selectOption(sortOption);
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('networkidle2');
   }
 
   async goToPage(pageNumber: number): Promise<void> {
     const pageLink = this.page.locator(`a:has-text("${pageNumber}")`);
     await pageLink.click();
-    await this.page.waitForLoadState('networkidle');
+    await this.page.waitForLoadState('networkidle2');
   }
 
   async clearSearch(): Promise<void> {
@@ -61,7 +61,7 @@ export class SearchPage extends BasePage {
   }
 
   async getSearchSuggestions(): Promise<string[]> {
-    const suggestions = await this.page.locator('[role="listbox"] > li, .suggestions > li');
+    const suggestions = this.page.locator('[role="listbox"] > li, .suggestions > li');
     const count = await suggestions.count();
     const result: string[] = [];
 

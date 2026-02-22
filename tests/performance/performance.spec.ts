@@ -5,7 +5,7 @@ test.describe('Performance Tests', () => {
 
   test('TC-066: Home page load time < 3 seconds', async ({ page }) => {
     const start = Date.now();
-    await page.goto(`${baseURL}/`, { waitUntil: 'networkidle' });
+    await page.goto(`${baseURL}/`, { waitUntil: 'networkidle2' });
     const duration = Date.now() - start;
 
     console.log(`Home page load time: ${duration}ms`);
@@ -38,7 +38,7 @@ test.describe('Performance Tests', () => {
   });
 
   test('TC-069: CSS file load performance', async ({ page }) => {
-    let cssLoadTimes: number[] = [];
+    const cssLoadTimes: number[] = [];
 
     page.on('response', async response => {
       if (response.url().endsWith('.css')) {
@@ -72,7 +72,7 @@ test.describe('Performance Tests', () => {
     });
 
     await page.goto(`${baseURL}/`);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('networkidle2');
 
     const totalMB = totalImageSize / (1024 * 1024);
     console.log(`Total image size: ${totalMB.toFixed(2)}MB`);
@@ -87,7 +87,7 @@ test.describe('Performance Tests', () => {
       const start = Date.now();
       await searchInput.fill('test');
       await searchInput.press('Enter');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('networkidle2');
       const duration = Date.now() - start;
 
       console.log(`Search response time: ${duration}ms`);

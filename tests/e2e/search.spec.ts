@@ -50,7 +50,7 @@ test.describe('Search Functionality - E2E Tests', () => {
     const specialQuery = '@#$%^&*';
     await searchPage.search(specialQuery);
 
-    const pageStable = await page.waitForLoadState('networkidle').catch(() => true);
+    const pageStable = await page.waitForLoadState('networkidle2').catch(() => true);
     expect(pageStable).toBeTruthy();
   });
 
@@ -88,7 +88,7 @@ test.describe('Search Functionality - E2E Tests', () => {
     if (resultCount > 0) {
       const initialUrl = await searchPage.getPageUrl();
       await searchPage.clickResult(0);
-      await page.waitForLoadState('networkidle').catch(() => true);
+      await page.waitForLoadState('networkidle2').catch(() => true);
 
       const newUrl = await searchPage.getPageUrl();
       expect(newUrl).toBeTruthy();

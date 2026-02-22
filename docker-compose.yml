@@ -13,9 +13,9 @@ services:
 
     # Volume mounts for test files and output
     volumes:
-      # Test files (read-only for consistency)
-      - ./tests:/app/tests:ro
-      - ./config:/app/config:ro
+      # Test files (read-write for linting and formatting)
+      - ./tests:/app/tests
+      - ./config:/app/config
 
       # Output directories (read-write for results)
       - ./reports:/app/reports

@@ -61,7 +61,7 @@ test.describe('Security - XSS Protection Tests', () => {
     let foundHandler = false;
 
     for (const handler of eventHandlers) {
-      const elements = await page.locator(`[${handler}]`);
+      const elements = page.locator(`[${handler}]`);
       const count = await elements.count();
       if (count > 0) {
         foundHandler = true;
@@ -79,7 +79,7 @@ test.describe('Security - XSS Protection Tests', () => {
       const testQuery = '<b>test</b>';
       await searchInput.fill(testQuery);
       await searchInput.press('Enter');
-      await page.waitForLoadState('networkidle');
+      await page.waitForLoadState('networkidle2');
 
       const pageContent = await page.content();
       const hasUnescapedHtml = pageContent.includes('<b>test</b>');

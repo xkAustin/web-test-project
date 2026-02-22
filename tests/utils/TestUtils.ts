@@ -40,7 +40,7 @@ export class TestUtils {
    * Wait for network idle
    */
   static async waitForNetworkIdle(page: Page, timeout = 5000): Promise<void> {
-    await page.waitForLoadState('networkidle', { timeout });
+    await page.waitForLoadState('networkidle2', { timeout });
   }
 
   /**

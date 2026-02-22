@@ -19,7 +19,7 @@ test.describe('Registration Tests - E2E', () => {
   });
 
   test('TC-042: 注册表单字段验证', async ({ page }) => {
-    await page.goto(`${baseURL}/register`, { waitUntil: 'networkidle' });
+    await page.goto(`${baseURL}/register`, { waitUntil: 'networkidle2' });
 
     const usernameField = page.locator('input[name="username"], input[placeholder*="用户名"]');
     const emailField = page.locator('input[name="email"], input[type="email"]');
@@ -35,7 +35,7 @@ test.describe('Registration Tests - E2E', () => {
   });
 
   test('TC-043: 空注册字段验证', async ({ page }) => {
-    await page.goto(`${baseURL}/register`, { waitUntil: 'networkidle' });
+    await page.goto(`${baseURL}/register`, { waitUntil: 'networkidle2' });
 
     const submitBtn = page.locator('button[type="submit"], button:has-text("注册")');
     const initialCount = await submitBtn.count();
@@ -57,7 +57,7 @@ test.describe('Registration Tests - E2E', () => {
     const email = `test_${Date.now()}@example.com`;
     const password = 'TestPass123@';
 
-    await page.goto(`${baseURL}/register`, { waitUntil: 'networkidle' });
+    await page.goto(`${baseURL}/register`, { waitUntil: 'networkidle2' });
 
     const usernameField = page.locator('input[name="username"], input[type="text"]').first();
     const emailField = page.locator('input[name="email"], input[type="email"]').first();
@@ -89,7 +89,7 @@ test.describe('Registration Tests - E2E', () => {
       const submitBtn = page.locator('button[type="submit"], button:has-text("注册")');
       if (await submitBtn.isVisible({ timeout: 5000 }).catch(() => false)) {
         await submitBtn.click();
-        await page.waitForLoadState('networkidle').catch(() => true);
+        await page.waitForLoadState('networkidle2').catch(() => true);
       }
     }
 
@@ -97,7 +97,7 @@ test.describe('Registration Tests - E2E', () => {
   });
 
   test('TC-045: 邮箱有效性检查', async ({ page }) => {
-    await page.goto(`${baseURL}/register`, { waitUntil: 'networkidle' });
+    await page.goto(`${baseURL}/register`, { waitUntil: 'networkidle2' });
 
     const emailField = page.locator('input[type="email"]');
     const emailVisible = await emailField.isVisible({ timeout: 5000 }).catch(() => false);
@@ -115,7 +115,7 @@ test.describe('Registration Tests - E2E', () => {
   });
 
   test('TC-046: 密码强度要求', async ({ page }) => {
-    await page.goto(`${baseURL}/register`, { waitUntil: 'networkidle' });
+    await page.goto(`${baseURL}/register`, { waitUntil: 'networkidle2' });
 
     const passwordField = page.locator('input[type="password"]').first();
     if (await passwordField.isVisible({ timeout: 5000 }).catch(() => false)) {
@@ -127,7 +127,7 @@ test.describe('Registration Tests - E2E', () => {
   });
 
   test('TC-047: 论坛讨论列表显示', async ({ page }) => {
-    await page.goto(`${baseURL}/forum`, { waitUntil: 'networkidle' });
+    await page.goto(`${baseURL}/forum`, { waitUntil: 'networkidle2' });
 
     const discussions = page.locator('.discussion-item, [class*="discussion"], li');
     const count = await discussions.count();
@@ -136,7 +136,7 @@ test.describe('Registration Tests - E2E', () => {
   });
 
   test('TC-048: 创建论坛讨论（如果已登录）', async ({ page }) => {
-    await page.goto(`${baseURL}/forum`, { waitUntil: 'networkidle' });
+    await page.goto(`${baseURL}/forum`, { waitUntil: 'networkidle2' });
 
     const createBtn = page.locator('button:has-text("创建"), button:has-text("发布"), button:has-text("新建")');
     const createVisible = await createBtn.isVisible({ timeout: 5000 }).catch(() => false);
@@ -147,7 +147,7 @@ test.describe('Registration Tests - E2E', () => {
   });
 
   test('TC-049: 标签过滤功能', async ({ page }) => {
-    await page.goto(`${baseURL}/forum`, { waitUntil: 'networkidle' });
+    await page.goto(`${baseURL}/forum`, { waitUntil: 'networkidle2' });
 
     const tags = page.locator('.tag, a[class*="tag"], button[class*="tag"]');
     const tagCount = await tags.count();
@@ -158,7 +158,7 @@ test.describe('Registration Tests - E2E', () => {
       expect(tagText).toBeTruthy();
 
       await firstTag.click().catch(() => {});
-      await page.waitForLoadState('networkidle').catch(() => true);
+      await page.waitForLoadState('networkidle2').catch(() => true);
     }
 
     expect(tagCount >= 0).toBeTruthy();
