@@ -15,13 +15,9 @@ concurrency:
 
 jobs:
   test:
-    name: Playwright Tests - Node ${{ matrix.node-version }}
+    name: Playwright Tests
     runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [18.x, 20.x]
-
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
@@ -29,7 +25,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20.x
           cache: 'npm'
 
       - name: Install dependencies
@@ -37,29 +33,6 @@ jobs:
 
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
-
-      - name: Run E2E tests
-        run: npm run test:e2e
-        env:
-          TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
-          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
-        continue-on-error: true
-
-      - name: Run API tests
-        run: npm run test:api
-        continue-on-error: true
-
-      - name: Run Security tests
-        run: npm run test:security
-        continue-on-error: true
-
-      - name: Run Performance tests
-        run: npm run test:performance
-        continue-on-error: true
-
-      - name: Run Accessibility tests
-        run: npm run test:accessibility
-        continue-on-error: true
 
       - name: Run all tests
         run: npm test
@@ -76,7 +49,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: playwright-report-node-${{ matrix.node-version }}
+          name: playwright-report
           path: reports/
           retention-days: 30
 
@@ -84,7 +57,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: html-report-node-${{ matrix.node-version }}
+          name: html-report
           path: reports/html/
           retention-days: 30
 
@@ -92,7 +65,7 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: screenshots-node-${{ matrix.node-version }}
+          name: screenshots
           path: screenshots/
           retention-days: 7
 
