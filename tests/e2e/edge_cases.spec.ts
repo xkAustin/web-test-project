@@ -1,10 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { TEST_USER } from '../utils/config';
+import { TEST_DATA } from '../fixtures/test-data';
 
 // 1. Login missing username
 test('TC-Edge-01 Login without username', async ({ page }) => {
   await page.goto('/login');
-  await page.fill('input[name="password"]', TEST_USER.password);
+  await page.fill('input[name="password"]', TEST_DATA.users.valid.password);
   await page.click('button[type="submit"]');
   await expect(page.locator('.error')).toContainText('Username is required');
 });
@@ -12,7 +12,7 @@ test('TC-Edge-01 Login without username', async ({ page }) => {
 // 2. Login missing password
 test('TC-Edge-02 Login without password', async ({ page }) => {
   await page.goto('/login');
-  await page.fill('input[name="username"]', TEST_USER.username);
+  await page.fill('input[name="username"]', TEST_DATA.users.valid.username);
   await page.click('button[type="submit"]');
   await expect(page.locator('.error')).toContainText('Password is required');
 });
@@ -39,14 +39,16 @@ test('TC-Edge-05 Page title after navigation', async ({ page }) => {
   await expect(page).toHaveTitle(/About/);
 });
 
-// 6. Verify session cookie after login
+// 6. Session cookie set after login (from edge.spec.ts TC-09 merged)
 test('TC-Edge-06 Session cookie set after login', async ({ page }) => {
   await page.goto('/login');
-  await page.fill('input[name="username"]', TEST_USER.username);
-  await page.fill('input[name="password"]', TEST_USER.password);
+  await page.fill('input[name="username"]', TEST_DATA.users.valid.username);
+  await page.fill('input[name="password"]', TEST_DATA.users.valid.password);
   await page.click('button[type="submit"]');
   await expect(page).toHaveURL(/\/dashboard$/);
   const cookies = await page.context().cookies();
-  const sessionCookie = cookies.find(c => c.name.toLowerCase().includes('session') || c.name.toLowerCase().includes('auth'));
+  const sessionCookie = cookies.find(
+    (c) => c.name.toLowerCase().includes('session') || c.name.toLowerCase().includes('auth'),
+  );
   expect(sessionCookie).toBeDefined();
 });

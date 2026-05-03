@@ -27,9 +27,8 @@ export default defineConfig({
     timeout: 5000,
   },
 
-  webServer: undefined,
-
-  projects: [
+  // webServer is not configured — tests run against the production URL
+  // globalSetup and globalTeardown are not configured  projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
@@ -55,7 +54,7 @@ export default defineConfig({
     },
   ],
 
-  globalSetup: undefined,
-  globalTeardown: undefined,
+  // globalSetup: undefined,
+  // globalTeardown: undefined,
 });
 

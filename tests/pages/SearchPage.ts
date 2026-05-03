@@ -26,7 +26,7 @@ export class SearchPage extends BasePage {
   async search(query: string): Promise<void> {
     await this.searchInput.fill(query);
     await this.searchButton.click();
-    await this.page.waitForLoadState('networkidle2');
+    await this.page.waitForLoadState('networkidle');
   }
 
   async getResultsCount(): Promise<number> {
@@ -47,13 +47,13 @@ export class SearchPage extends BasePage {
 
   async applySorting(sortOption: string): Promise<void> {
     await this.sortDropdown.selectOption(sortOption);
-    await this.page.waitForLoadState('networkidle2');
+    await this.page.waitForLoadState('networkidle');
   }
 
   async goToPage(pageNumber: number): Promise<void> {
     const pageLink = this.page.locator(`a:has-text("${pageNumber}")`);
     await pageLink.click();
-    await this.page.waitForLoadState('networkidle2');
+    await this.page.waitForLoadState('networkidle');
   }
 
   async clearSearch(): Promise<void> {

@@ -1,12 +1,10 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('Security - CSRF Protection Tests', () => {
-  const baseURL = 'https://www.wangdanatest.top';
-
   test('TC-041: CSRF Protection - POST without token should fail', async ({ request }) => {
-    const response = await request.post(`${baseURL}/api/submit`, {
+    const response = await request.post('/api/submit', {
       data: { foo: 'bar' },
-      failOnStatusCode: false
+      failOnStatusCode: false,
     });
 
     const isProtected = response.status() === 403 || response.status() === 401 || response.status() === 400;
@@ -14,9 +12,10 @@ test.describe('Security - CSRF Protection Tests', () => {
   });
 
   test('TC-042: CSRF Token exists in login form', async ({ page }) => {
-    await page.goto(`${baseURL}/login`);
+    await page.goto('/login');
 
-    const csrfToken = await page.locator('input[name="csrf_token"], input[name="token"], input[name="_token"]')
+    const csrfToken = await page
+      .locator('input[name="csrf_token"], input[name="token"], input[name="_token"]')
       .first()
       .inputValue()
       .catch(() => '');
@@ -24,8 +23,8 @@ test.describe('Security - CSRF Protection Tests', () => {
     const hiddenToken = await page.evaluate(() => {
       const inputs = document.querySelectorAll('input[type="hidden"]');
       for (const input of inputs) {
-        if ((input as HTMLInputElement).name?.toLowerCase().includes('csrf') ||
-            (input as HTMLInputElement).name?.toLowerCase().includes('token')) {
+        const name = (input as HTMLInputElement).name?.toLowerCase() || '';
+        if (name.includes('csrf') || name.includes('token')) {
           return (input as HTMLInputElement).value;
         }
       }
@@ -37,44 +36,44 @@ test.describe('Security - CSRF Protection Tests', () => {
   });
 
   test('TC-043: CSRF Protection - SameSite cookie attribute', async ({ page }) => {
-    await page.goto(`${baseURL}/`);
+    await page.goto('/');
 
     const cookies = await page.context().cookies();
-    const sessionCookie = cookies.find(c => c.name.toLowerCase().includes('session') || c.name.toLowerCase().includes('auth'));
+    const sessionCookie = cookies.find(
+      (c) => c.name.toLowerCase().includes('session') || c.name.toLowerCase().includes('auth'),
+    );
 
     if (sessionCookie) {
-      const hasSameSite = sessionCookie.sameSite !== undefined;
-      expect(hasSameSite).toBeTruthy();
-    } else {
-      expect(true).toBeTruthy();
+      expect(sessionCookie.sameSite).toBeDefined();
     }
+    // If no session cookie found, this test is inconclusive but not a failure
   });
 
   test('TC-044: CSRF Protection - Referrer check', async ({ request }) => {
-    const response = await request.post(`${baseURL}/api/discussions`, {
+    const response = await request.post('/api/discussions', {
       headers: {
-        'Referer': 'https://evil.com'
+        Referer: 'https://evil.com',
       },
       data: {
         title: 'Test',
-        content: 'Test content'
+        content: 'Test content',
       },
-      failOnStatusCode: false
+      failOnStatusCode: false,
     });
 
     expect([401, 403, 400, 405]).toContain(response.status());
   });
 
   test('TC-045: CSRF Protection - Origin header validation', async ({ request }) => {
-    const response = await request.post(`${baseURL}/api/discussions`, {
+    const response = await request.post('/api/discussions', {
       headers: {
-        'Origin': 'https://evil.com'
+        Origin: 'https://evil.com',
       },
       data: {
         title: 'Test',
-        content: 'Test content'
+        content: 'Test content',
       },
-      failOnStatusCode: false
+      failOnStatusCode: false,
     });
 
     const statusCode = response.status();
@@ -82,10 +81,12 @@ test.describe('Security - CSRF Protection Tests', () => {
   });
 
   test('TC-046: CSRF Protection - Double Submit Cookie Pattern', async ({ page }) => {
-    await page.goto(`${baseURL}/`);
+    await page.goto('/');
 
     const cookies = await page.context().cookies();
-    const csrfCookie = cookies.find(c => c.name.toLowerCase().includes('csrf') || c.name.toLowerCase().includes('xsrf'));
+    const csrfCookie = cookies.find(
+      (c) => c.name.toLowerCase().includes('csrf') || c.name.toLowerCase().includes('xsrf'),
+    );
 
     expect(csrfCookie !== undefined || cookies.length > 0).toBeTruthy();
   });
@@ -94,10 +95,10 @@ test.describe('Security - CSRF Protection Tests', () => {
     const methods = ['POST', 'PUT', 'DELETE', 'PATCH'];
 
     for (const method of methods) {
-      const response = await request.fetch(`${baseURL}/api/discussions`, {
+      const response = await request.fetch('/api/discussions', {
         method,
         data: { test: 'data' },
-        failOnStatusCode: false
+        failOnStatusCode: false,
       });
 
       const isProtected = response.status() !== 200 && response.status() !== 201;
@@ -109,9 +110,9 @@ test.describe('Security - CSRF Protection Tests', () => {
     const methods = ['GET', 'HEAD', 'OPTIONS'];
 
     for (const method of methods) {
-      const response = await request.fetch(`${baseURL}/api/discussions`, {
+      const response = await request.fetch('/api/discussions', {
         method,
-        failOnStatusCode: false
+        failOnStatusCode: false,
       });
 
       const statusCode = response.status();
@@ -120,24 +121,24 @@ test.describe('Security - CSRF Protection Tests', () => {
   });
 
   test('TC-049: CSRF Protection - Custom headers defense', async ({ request }) => {
-    const response = await request.post(`${baseURL}/api/discussions`, {
+    const response = await request.post('/api/discussions', {
       headers: {
-        'X-Requested-With': 'XMLHttpRequest'
+        'X-Requested-With': 'XMLHttpRequest',
       },
       data: { test: 'data' },
-      failOnStatusCode: false
+      failOnStatusCode: false,
     });
 
     expect([401, 403, 400, 405, 200, 201]).toContain(response.status());
   });
 
   test('TC-050: CSRF Protection - Content-Type validation', async ({ request }) => {
-    const response = await request.post(`${baseURL}/api/discussions`, {
+    const response = await request.post('/api/discussions', {
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       data: 'test=data',
-      failOnStatusCode: false
+      failOnStatusCode: false,
     });
 
     expect(response.status()).toBeGreaterThanOrEqual(200);

@@ -468,4 +468,4 @@ docker volume prune
 - [Playwright Documentation](https://playwright.dev/)
 - [Docker Documentation](https://docs.docker.com/)
 - [Docker Best Practices](https://docs.docker.com/develop/dev-best-practices/)
-- Project QUICK_COMMANDS.md for all npm test commands
+- [测试规范](TEST_SPECIFICATION.md) 获取全部 npm 命令参考

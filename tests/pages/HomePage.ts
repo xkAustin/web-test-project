@@ -26,7 +26,7 @@ export class HomePage extends BasePage {
   async searchFor(term: string) {
     await this.searchInput.fill(term);
     await this.searchInput.press('Enter');
-    await this.page.waitForLoadState('networkidle2');
+    await this.page.waitForLoadState('networkidle');
   }
 
   async goToLogin() {
@@ -39,7 +39,7 @@ export class HomePage extends BasePage {
 
   async goToForum() {
     await this.forumLink.click();
-    await this.page.waitForLoadState('networkidle2');
+    await this.page.waitForLoadState('networkidle');
   }
 
   async getDiscussionCount(): Promise<number> {
