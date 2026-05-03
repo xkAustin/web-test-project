@@ -38,7 +38,7 @@
 ### 开始前
 
 1. 检查 [Issue](https://github.com/your-repo/issues) 列表，确保没有重复
-2. 阅读 [测试计划](../test_plan/TEST_PLAN.md) 和 [执行指南](./TESTING_GUIDE.md)
+2. 阅读 [测试规范](docs/TEST_SPECIFICATION.md)
 3. Fork 本项目
 4. Clone 你的 Fork
 
@@ -251,10 +251,12 @@ tests/
 ├── pages/         # 页面对象
 │   ├── BasePage.ts
 │   ├── HomePage.ts
-│   └── LoginPage.ts
-└── utils/         # 工具函数
-    ├── config.ts
-    └── constants.ts
+│   ├── LoginPage.ts
+│   └── SearchPage.ts
+├── utils/         # 工具函数
+│   └── TestUtils.ts
+└── fixtures/      # 测试数据
+    └── test-data.ts
 ```
 
 ---
@@ -398,8 +400,7 @@ PWDEBUG=1 npm test
 
 ## 获得帮助
 
-- 📖 查看 [测试计划](../test_plan/TEST_PLAN.md)
-- 📚 查看 [执行指南](./TESTING_GUIDE.md)
+- 📖 查看 [测试规范](docs/TEST_SPECIFICATION.md)
 - 💬 在 Issues 中提问
 - 🐛 查看 [故障排除](./TESTING_GUIDE.md#故障排除)
 

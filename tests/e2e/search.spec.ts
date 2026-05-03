@@ -19,7 +19,9 @@ test.describe('Search Functionality - E2E Tests', () => {
     const homePage = new HomePage(page);
     await homePage.navigateTo();
 
-    const searchInputVisible = await homePage.isElementVisible('input[placeholder*="Search"], input[placeholder*="搜索"]');
+    const searchInputVisible = await homePage.isElementVisible(
+      'input[placeholder*="Search"], input[placeholder*="搜索"]',
+    );
     expect(searchInputVisible).toBeTruthy();
   });
 
@@ -30,7 +32,8 @@ test.describe('Search Functionality - E2E Tests', () => {
     for (const term of SEARCH_TERMS) {
       await searchPage.search(term);
       const resultCount = await searchPage.getResultsCount();
-      expect(resultCount >= 0).toBeTruthy();
+      // Test that search returns results or gracefully handles no results
+      expect(typeof resultCount).toBe('number');
     }
   });
 
@@ -39,8 +42,10 @@ test.describe('Search Functionality - E2E Tests', () => {
     await searchPage.navigateTo();
 
     await searchPage.search('');
-    const hasResults = await searchPage.getResultsCount() > 0 || await searchPage.hasNoResults();
-    expect(hasResults).toBeTruthy();
+    const resultCount = await searchPage.getResultsCount();
+    const hasNoResults = await searchPage.hasNoResults();
+    // Either results are returned or a "no results" message is shown
+    expect(resultCount >= 0 && (resultCount > 0 || hasNoResults)).toBeTruthy();
   });
 
   test('TC-036: Search with special characters', async ({ page }) => {
@@ -50,8 +55,9 @@ test.describe('Search Functionality - E2E Tests', () => {
     const specialQuery = '@#$%^&*';
     await searchPage.search(specialQuery);
 
-    const pageStable = await page.waitForLoadState('networkidle2').catch(() => true);
-    expect(pageStable).toBeTruthy();
+    // Verify page is still in a usable state after special character search
+    const pageContent = await page.content();
+    expect(pageContent.length).toBeGreaterThan(0);
   });
 
   test('TC-037: Search result visibility', async ({ page }) => {
@@ -85,14 +91,14 @@ test.describe('Search Functionality - E2E Tests', () => {
     await searchPage.search('test');
 
     const resultCount = await searchPage.getResultsCount();
-    if (resultCount > 0) {
-      const initialUrl = await searchPage.getPageUrl();
-      await searchPage.clickResult(0);
-      await page.waitForLoadState('networkidle2').catch(() => true);
+    test.skip(resultCount === 0, 'No search results to click');
 
-      const newUrl = await searchPage.getPageUrl();
-      expect(newUrl).toBeTruthy();
-    }
+    const initialUrl = await searchPage.getPageUrl();
+    await searchPage.clickResult(0);
+    await page.waitForLoadState('networkidle');
+
+    const newUrl = await searchPage.getPageUrl();
+    expect(newUrl).not.toBe(initialUrl);
   });
 
   test('TC-040: Search performance', async ({ page }) => {
@@ -106,4 +112,3 @@ test.describe('Search Functionality - E2E Tests', () => {
     expect(duration).toBeLessThan(5000);
   });
 });
-

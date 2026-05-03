@@ -8,7 +8,7 @@ export class BasePage {
   }
 
   async navigateTo(path: string = '/') {
-    await this.page.goto(path, { waitUntil: 'networkidle2' });
+    await this.page.goto(path, { waitUntil: 'networkidle' });
   }
 
   async getTitle(): Promise<string> {
@@ -29,7 +29,7 @@ export class BasePage {
 
   async waitForNavigation(action: () => Promise<void>) {
     await Promise.all([
-      this.page.waitForNavigation({ waitUntil: 'networkidle2' }),
+      this.page.waitForNavigation({ waitUntil: 'networkidle' }),
       action()
     ]);
   }
@@ -55,16 +55,18 @@ export class BasePage {
     await this.page.locator(selector).scrollIntoViewIfNeeded();
   }
 
-  async dismissCookieBanner() {
+  async dismissCookieBanner(): Promise<void> {
     const bannerSelector = '[class*="cookie"]';
     try {
       const banner = this.page.locator(bannerSelector).first();
-      if (await banner.isVisible({ timeout: 5000 })) {
-        const closeButton = banner.locator('button:has-text("Accept"), button:has-text("Close"), [aria-label*="close"]');
-        await closeButton.click().catch(() => {});
+      if (await banner.isVisible({ timeout: 3000 }).catch(() => false)) {
+        const closeButton = banner.locator('button:has-text("Accept"), button:has-text("Close"), [aria-label*="close"]').first();
+        if (await closeButton.isVisible({ timeout: 2000 }).catch(() => false)) {
+          await closeButton.click();
+        }
       }
     } catch {
-      // Cookie banner might not exist
+      // Cookie banner might not exist — this is acceptable
     }
   }
 

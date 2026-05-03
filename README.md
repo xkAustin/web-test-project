@@ -1,296 +1,117 @@
-# wangdanatest.top 自动化测试项目
+# wangdanatest.top 自动化测试
 
-![CI Status](https://github.com/your-username/test-project/actions/workflows/test.yml/badge.svg)
-![License](https://img.shields.io/badge/license-MIT-blue.svg)
-![Node.js](https://img.shields.io/badge/node.js-%3E%3D18.0.0-brightgreen)
+企业级 Playwright 测试框架，覆盖 [wangdanatest.top](https://www.wangdanatest.top) 全站功能、API、安全、性能和可访问性测试。
 
-<div align="center">
-
-**企业级 Playwright 自动化测试框架**
-
-完整的测试解决方案，用于测试 [wangdanatest.top](https://www.wangdanatest.top) - 软件测试技术交流论坛
-
-[📖 文档](#文档) • [🚀 快速开始](#快速开始) • [📂 结构](#项目结构) • [🤝 贡献](CONTRIBUTING.md)
-
-</div>
-
----
-
-## ✨ 核心特性
-
-- ✅ **80+ 测试用例** - 5 种测试类型完全覆盖
-- ✅ **多浏览器支持** - Chrome, Firefox, Safari, 移动浏览器
-- ✅ **Page Object Model** - 高效的代码架构
-- ✅ **完整文档体系** - 80,000+ 字详细文档
-- ✅ **自动化 CI/CD** - GitHub Actions 完整工作流
-- ✅ **开箱即用** - 快速上手，最小化学习曲线
-
----
-
-## 📊 快览
+## 快览
 
 | 指标 | 数值 |
 |------|------|
-| 测试用例 | 80+ |
-| 测试文件 | 12 |
-| 页面对象 | 4 |
-| 浏览器 | 5 |
-| 文档页数 | 80+ |
+| 测试用例 | 106 |
+| 规范文件 | 11 (e2e × 6, api × 1, security × 3, performance × 1) |
+| 页面对象 | 4 (BasePage, HomePage, LoginPage, SearchPage) |
+| 浏览器 | 5 (Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari) |
+| 测试类型 | 5 (E2E, API, Security, Performance, Accessibility) |
 
----
-
-## 🚀 快速开始
-
-###  1️⃣ 安装依赖
+## 快速开始
 
 ```bash
-npm ci
-npx playwright install --with-deps
+npm ci                                # 安装依赖
+npx playwright install --with-deps    # 安装浏览器
+cp .env.example .env                  # 配置凭证（编辑 TEST_USERNAME/TEST_PASSWORD）
+bash scripts/check-env.sh             # 验证环境
+npm test                              # 运行全部测试
 ```
 
-### 2️⃣ 配置环境
+## 项目结构
+
+```
+├── tests/
+│   ├── e2e/            # 端到端测试 (home, login, search, registration, about, edge_cases)
+│   ├── api/            # 论坛 API 测试 (forum_api)
+│   ├── security/       # 安全测试 (xss, csrf, accessibility)
+│   ├── performance/    # 性能基准测试
+│   ├── pages/          # 页面对象模型 (BasePage, HomePage, LoginPage, SearchPage)
+│   ├── utils/          # 工具类 (TestUtils)
+│   └── fixtures/       # 测试数据 (test-data)
+├── config/             # 扩展配置 (test-config)
+├── scripts/            # 自动化脚本 (check-env, generate-report)
+├── docs/               # 文档 (TEST_SPECIFICATION, DOCKER_GUIDE, reports/)
+├── .github/workflows/  # CI/CD (test.yml, ci.yml)
+├── playwright.config.ts
+├── Dockerfile
+└── docker-compose.yml
+```
+
+## 测试类型
+
+| 类型 | 命令 | 覆盖范围 |
+|------|------|---------|
+| E2E | `npm run test:e2e` | 主页加载、登录认证、搜索、注册、论坛交互、边界情况 |
+| API | `npm run test:api` | /api/discussions, /api/tags, 响应头, CORS, 限流 |
+| 安全 | `npm run test:security` | XSS (10), CSRF (10), 可访问性 WCAG 2.0 AA (15) |
+| 性能 | `npm run test:performance` | 加载时间, TTFB, 并发请求, 内存, 渲染性能 |
+| 移动端 | `npm run test:mobile` | Mobile Chrome + Mobile Safari |
+
+## 常用命令
 
 ```bash
-cp .env.example .env
-# 编辑.env, 添加测试凭证
+npm test                   # 全部测试
+npm run test:ui            # UI 交互模式
+npm run test:debug         # 调试模式
+npm run test:chromium      # 仅 Chrome
+npm run test:firefox       # 仅 Firefox
+npm run test:webkit        # 仅 Safari
+npm run test:e2e           # E2E 套件
+npm run test:api           # API 套件
+npm run test:security      # 安全套件
+npm run test:performance   # 性能套件
+npm run test:mobile        # 移动端测试
+npm run test:failed        # 仅重跑失败用例
+npm run test:report        # 查看 HTML 报告
+npm run lint               # ESLint 检查
+npm run format             # Prettier 格式化
 ```
 
-### 3️⃣ 验证并运行
-
-```bash
-bash scripts/check-env.sh      # 环境检查
-npm test                        # 运行所有测试
-npm run test:ui                 # UI交互模式（推荐）
-```
-
----
-
-## 📂 项目结构
-
-```
-test-project/
-├── 📋 根目录配置
-│   ├── README.md              # 本文件（快速入门）
-│   ├── CONTRIBUTING.md        # 贡献指南
-│   ├── package.json           # 项目配置
-│   ├── playwright.config.ts   # Playwright 配置
-│   ├── .env.example           # 环境变量示例
-│   └── Dockerfile             # Docker 配置
-│
-├── 📚 docs/                    # 完整文档（80+ 页）
-│   ├── PROJECT_COMPLETION_SUMMARY.md  # 项目完成总结
-│   ├── PROJECT_STRUCTURE.md    # 文件结构说明
-│   ├── test_plan/             # 测试计划
-│   ├── guidelines/            # 执行指南
-│   └── reports/               # 报告模板
-│
-├── 🧪 tests/                   # 测试代码（80+ 用例）
-│   ├── e2e/                   # 端到端测试
-│   ├── api/                   # API 测试
-│   ├── security/              # 安全测试
-│   ├── performance/           # 性能测试
-│   ├── pages/                 # 页面对象（4 个）
-│   └── utils/                 # 工具函数
-│
-├── 📜 scripts/                 # 自动化脚本
-│   ├── check-env.sh           # 环境检查
-│   └── generate-report.sh     # 报告生成
-│
-├── ⚙️ config/                  # 配置文件
-│
-└── 📁 .github/workflows/       # CI/CD 工作流
-    ├── test.yml               # 测试执行
-    └── ci.yml                 # 代码质量检查
-```
-
----
-
-## 📖 文档导航
-
-| 文档 | 说明 |
-|------|------|
-| [PROJECT_COMPLETION_SUMMARY.md](docs/PROJECT_COMPLETION_SUMMARY.md) | 📋 项目完成情况 |
-| [TEST_PLAN.md](docs/test_plan/TEST_PLAN.md) | 📝 所有测试用例 |
-| [TESTING_GUIDE.md](docs/guidelines/TESTING_GUIDE.md) | 🚀 快速执行指南 |
-| [PROJECT_STRUCTURE.md](docs/PROJECT_STRUCTURE.md) | 🏗️ 文件结构说明 |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | 🤝 贡献指南 |
-
----
-
-## 🧪 测试类型
-
-### E2E 测试（40+ 用例）
-验证用户完整业务流程
-```bash
-npm run test:e2e
-```
-
-### API 测试（10+ 用例）
-验证后端接口可靠性
-```bash
-npm run test:api
-```
-
-### 安全测试（35+ 用例）
-实施 XSS、CSRF、可访问性验证
-```bash
-npm run test:security
-```
-
-### 性能测试（15+ 用例）
-监控关键性能指标
-```bash
-npm run test:performance
-```
-
-### 兼容性测试
-多浏览器、多设备验证
-```bash
-npm run test:mobile
-```
-
----
-
-## 💻 常用命令
-
-```bash
-# 基本命令
-npm test                  # 所有测试
-npm run test:ui          # UI 交互模式
-npm run test:debug       # 调试模式
-
-# 特定浏览器
-npm run test:chromium    # Chrome
-npm run test:firefox     # Firefox
-npm run test:webkit      # Safari
-
-# 特定套件
-npm run test:e2e         # E2E 测试
-npm run test:api         # API 测试
-npm run test:security    # 安全测试
-
-# 报告
-npm run test:report      # 查看 HTML 报告
-npm run coverage         # 覆盖率报告
-
-# 代码质量
-npm run lint             # 代码检查
-npm run format           # 代码格式化
-```
-
----
-
-## 🐳 Docker 运行
+## Docker
 
 ```bash
 docker build -t wangdanatest-automation .
-docker run --rm -v $(pwd):/app -w /app wangdanatest-automation npm test
+docker run --rm -v $(pwd)/reports:/app/reports wangdanatest-automation npm test
+docker-compose up                          # 运行测试
+docker-compose --profile reporter up       # 测试 + HTML 报告 (localhost:8080)
+docker-compose --profile debug run playwright-debug  # 交互式调试
 ```
 
----
+详见 [Docker 完整指南](docs/DOCKER_GUIDE.md)。
 
-## 📈 持续集成
+## 持续集成
 
-项目已配置 GitHub Actions：
+GitHub Actions 已配置自动测试执行：push/PR 触发（main, develop），每日 UTC 1:00 定时运行，包含安全审计和 Docker 镜像构建。
 
-- ✅ 自动测试执行
-- ✅ 多 Node 版本测试
-- ✅ 安全审计检查
-- ✅ 代码质量分析
-- ✅ 自动报告生成
+所需 Secrets: `TEST_USERNAME`, `TEST_PASSWORD`
 
-**配置**:
-1. 添加 GitHub Secrets: `TEST_USERNAME`, `TEST_PASSWORD`
-2. 推送到 main/develop 分支自动触发
-3. 每天 UTC 1:00 定时运行
+## 文档
 
----
+- [测试规范](docs/TEST_SPECIFICATION.md) — 测试计划、用例清单、编写指南、POM 参考、故障排除
+- [Docker 指南](docs/DOCKER_GUIDE.md) — 容器化运行完整说明
+- [贡献指南](CONTRIBUTING.md) — 代码风格、提交规范、PR 流程
 
-## 🎯 测试覆盖
+## 贡献
 
-### 功能模块
-- 🏠 首页加载、导航、内容
-- 🔐 用户认证、登录、凭证验证
-- 🔍 搜索功能、结果展示、分页
-- 💬 论坛交互、讨论、标签、分类
-- 🔌 API 端点、响应、性能
+参见 [CONTRIBUTING.md](CONTRIBUTING.md)。简略流程：
 
-### 安全防护
-- ⚔️ XSS 保护
-- 🛡️ CSRF 保护
-- ♿ WCAG 2.0 AA 可访问性
-
-### 其他
-- ⚡ 性能指标监控
-- 📱 跨平台兼容性
-- 📊 多浏览器支持
-
----
-
-## 🐛 故障排除
-
-**找不到元素?** → 查看 [TESTING_GUIDE.md](docs/guidelines/TESTING_GUIDE.md#故障排除)
-
-**网络超时?** → 检查连接或 [查看解决方案](docs/guidelines/TESTING_GUIDE.md#问题-2-网络请求超时)
-
-**凭证错误?** → 检查 `.env` 文件配置
-
-**测试失败?** → 运行 `npm run test:debug` 调试
-
----
-
-## 🏁 第一次使用？
-
-1. 📖 阅读本文件的"快速开始"
-2. 🔍 查看 [TESTING_GUIDE.md](docs/guidelines/TESTING_GUIDE.md)
-3. ▶️ 运行 `npm run test:ui` 查看演示
-4. 📋 查看 [TEST_PLAN.md](docs/test_plan/TEST_PLAN.md) 了解所有用例
-
----
-
-## 🤝 贡献
-
-欢迎贡献！查看 [CONTRIBUTING.md](CONTRIBUTING.md) 获取详情
-
-### 快速流程
 ```bash
 git checkout -b feature/your-feature
-# 编码...
-git commit -m 'feat: add amazing feature'
+# 编写代码和测试...
+git commit -m 'feat: description'
 git push origin feature/your-feature
 # 创建 Pull Request
 ```
 
----
+## 许可证
 
-## 📞 获取帮助
-
-- 🐛 报告问题: [GitHub Issues](https://github.com/your-username/test-project/issues)
-- 💬 讨论方案: [GitHub Discussions](https://github.com/your-username/test-project/discussions)
-- 📧 联系团队: qa-team@example.com
+MIT — 详见 [LICENSE](LICENSE)
 
 ---
 
-## 📜 许可证
-
-MIT License - 详见 [LICENSE](LICENSE)
-
----
-
-## 🙏 致谢
-
-感谢所有贡献者和使用者！
-
----
-
-<div align="center">
-
-**立即开始** 🚀
-
-[文档](docs/) • [问题](https://github.com/your-username/test-project/issues) • [讨论](https://github.com/your-username/test-project/discussions)
-
-</div>
-
----
-
-**版本**: 1.0.0 | **更新**: 2026-02-21 | **维护**: QA Team
+**版本**: 1.0.0 | **维护**: QA Team

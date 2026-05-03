@@ -1,9 +1,9 @@
 import { test, expect } from '@playwright/test';
 import { LoginPage } from '../pages/LoginPage';
-import { TEST_USER } from '../utils/config';
+import { TEST_DATA } from '../fixtures/test-data';
 
 test.describe('Login Page - E2E Tests', () => {
-  const VALID_USER = TEST_USER;
+  const VALID_USER = TEST_DATA.users.valid;
   const INVALID_PASSWORD = 'wrongpass@123';
 
   test.beforeEach(async ({ page }) => {
@@ -43,7 +43,12 @@ test.describe('Login Page - E2E Tests', () => {
     await loginPage.login(VALID_USER.username, VALID_USER.password);
 
     const currentUrl = await loginPage.getPageUrl();
-    const successMessageVisible = await loginPage.successMessage.isVisible({ timeout: 5000 }).catch(() => false);
+    let successMessageVisible = false;
+    try {
+      successMessageVisible = await loginPage.isElementVisible('[class*="success"], .alert-success');
+    } catch {
+      // success element may not exist
+    }
 
     const isSuccess = currentUrl.includes('dashboard') || currentUrl.includes('home') || successMessageVisible;
     expect(isSuccess).toBeTruthy();
@@ -53,16 +58,14 @@ test.describe('Login Page - E2E Tests', () => {
     const loginPage = new LoginPage(page);
     await loginPage.login(VALID_USER.username, INVALID_PASSWORD);
 
-    const errorVisible = await loginPage.isErrorVisible();
-    expect(errorVisible).toBeTruthy();
+    expect(await loginPage.isErrorVisible()).toBeTruthy();
   });
 
   test('TC-014: Invalid username', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.login('nonexistentuser@test.com', VALID_USER.password);
 
-    const errorVisible = await loginPage.isErrorVisible();
-    expect(errorVisible).toBeTruthy();
+    expect(await loginPage.isErrorVisible()).toBeTruthy();
   });
 
   test('TC-015: Form field interaction', async ({ page }) => {
@@ -80,13 +83,13 @@ test.describe('Login Page - E2E Tests', () => {
   test('TC-016: Remember me functionality', async ({ page }) => {
     const loginPage = new LoginPage(page);
 
-    const checkboxVisible = await loginPage.rememberMeCheckbox.isVisible({ timeout: 5000 }).catch(() => false);
-    if (checkboxVisible) {
-      await loginPage.loginWithRememberMe(VALID_USER.username, VALID_USER.password);
-      expect(true).toBeTruthy();
-    } else {
-      expect(true).toBeTruthy();
-    }
+    const checkboxVisible = await loginPage.rememberMeCheckbox.isVisible({ timeout: 3000 }).catch(() => false);
+    test.skip(!checkboxVisible, 'Remember me checkbox not present on this page');
+
+    await loginPage.loginWithRememberMe(VALID_USER.username, VALID_USER.password);
+    // If login succeeds without error, the test passes
+    const currentUrl = await loginPage.getPageUrl();
+    expect(currentUrl).toBeTruthy();
   });
 
   test('TC-017: Clear form functionality', async ({ page }) => {
