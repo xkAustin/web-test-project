@@ -85,7 +85,13 @@ test.describe('Security - XSS Protection Tests', () => {
     let hasJsProtocol = false;
     for (let i = 0; i < linkCount; i++) {
       const href = await allLinks.nth(i).getAttribute('href');
-      if (href && href.startsWith('javascript:')) {
+      const normalizedHref = href?.trim().toLowerCase();
+      if (
+        normalizedHref &&
+        (normalizedHref.startsWith('javascript:') ||
+          normalizedHref.startsWith('data:') ||
+          normalizedHref.startsWith('vbscript:'))
+      ) {
         hasJsProtocol = true;
         break;
       }
